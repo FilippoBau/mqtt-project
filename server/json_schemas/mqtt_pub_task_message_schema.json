@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id" : "http://www.my-schema.com/mqtt_pub_task_message_schema.json",
+  "title": "MQTT Message public task",
+  "description": "JSON Schema for MQTT Message",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "path to the JSON Schema to use for the validation of the JSON file describing the MQTT Message"
+    },
+    "type": {
+      "type": "string",
+      "description": "current condition of the task (the available types are NEW if it is created by a user, UPDATE if it is modicated by any user, or REMOVE if it has been removed by any user)",
+      "enum": ["CREATE", "UPDATE", "REMOVE"]
+    },
+    "task":{
+      "$ref": "./task_schema.json#"
+    },
+    "taskId": {
+      "type": "integer",
+      "description": "identified of the task"
+    }
+  },
+  "required": ["type","task"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "typeMessage": { "const": "REMOVE" } }
+      },
+      "then": {
+        "required": ["taskId"]
+      },
+      "else": {
+          "required": ["task"]
+      }
+    }
+    
+
+  ]
+}
